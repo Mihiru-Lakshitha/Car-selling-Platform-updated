@@ -1,0 +1,69 @@
+{% extends "auctions/layout.html" %}
+{% load static %}
+
+{% block body %}
+
+
+
+    <!-- Carousel Start -->
+    <div class="container-fluid p-0 mb-5">
+        <div id="header-carousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img class="w-100" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTu3TIGoVr145PwmLObkmheVuw0t06Cy6A_Ew&usqp=CAU" alt="Image" style="width: 2400px; height: 300px;">
+                    <div class="carousel-caption d-flex align-items-center">
+                        <div class="container">
+                            <div class="row align-items-center justify-content-center justify-content-lg-start">
+                                <div class="col-10 col-lg-7 text-center text-lg-start"> 
+                                    <h1 class="display-3 text-white mb-4 pb-3 animated slideInDown">Active Listings</h1> 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-4">
+        <div class="row">
+            {% for item in listings %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card d-flex flex-column h-100 shadow-sm">
+                        <a href="{% url 'listing' item.id %}">
+                            <img class="card-img-top" src="{{ item.image_url }}" alt="{{ item.title }}">
+                        </a>
+                        <div class="card-body flex-grow-1">
+                            <h5 class="card-title mb-3"><a href="{% url 'listing' item.id %}" class="text-dark">{{ item.title }}</a></h5>
+                            <p class="card-text text-muted mb-2">{{ item.description }}</p>
+                            <p class="card-text text-muted mb-1"><small>Author: {{ item.user }}</small></p>
+                            {% if item.category %}
+                                <p class="card-text text-muted mb-1"><small>Category: {{ item.category | title }}</small></p>
+                            {% else %}
+                                <p class="card-text text-muted mb-1"><small>Category: Not listed</small></p>
+                            {% endif %}
+                            {% if item.starting_bid %}
+                                <p class="card-text text-success mb-2"><strong>Price: ${{ item.starting_bid }}</strong></p>
+                            {% else %}
+                                <p class="card-text text-danger mb-2"><strong>Price: Not specified</strong></p>
+                            {% endif %}
+                            {% if item.winner is None %}
+                                <p class="card-text text-success mb-2"><strong>Status: Available</strong></p>
+                            {% else %}
+                                <p class="card-text text-danger mb-2"><strong>Status: Sold</strong></p>
+                            {% endif %}
+                            <p class="card-text text-muted mb-1"><small>Created at: {{ item.created_at }}</small></p>
+                        </div>
+                        <div class="card-footer text-center">
+                            {% if item in user.watchlist.all %}
+                                <a href="{% url 'unwatch' item.id %}" class="btn btn-outline-danger"><i class="fa fa-heart"></i> Remove from Watchlist</a>
+                            {% else %}
+                                <a href="{% url 'watch' item.id %}" class="btn btn-outline-danger"><i class="far fa-heart"></i> Add to Watchlist</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
